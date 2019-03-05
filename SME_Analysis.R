@@ -1,6 +1,8 @@
 ### Stefano Berto, 10/2018 - 
 ### Code for SME - gene expression correlation analysis
-### Perform expression filterin and regression, correlation and cross-validations
+### Perform expression filterin and regression, correlation and cross-validations]
+
+# Load libraries
 suppressPackageStartupMessages(library(sva))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(RColorBrewer))
