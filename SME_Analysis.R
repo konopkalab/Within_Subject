@@ -1,5 +1,6 @@
-
-## Correlation Analysis
+### Stefano Berto, 10/2018 - 
+### Code for SME - gene expression correlation analysis
+### Perform expression filterin and regression, correlation and cross-validations
 suppressPackageStartupMessages(library(sva))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(RColorBrewer))
@@ -302,4 +303,5 @@ save(SME_cor_LR,file = "OUTPUTS/SME_Genes.RData")
 SME_Significant_Genes <- SME_cor_LR[SME_cor_LR$Pval < 0.05 & SME_cor_LR$BootP < 0.05 & SME_cor_LR$PermP < 0.05 & SME_cor_LR$BootP_All < 0.05,]
 write.table(SME_Significant_Genes,"OUTPUTS/SME_Significant_Genes.txt",sep="\t",quote=F)
 
-
+# sessionInfo
+sessionInfo()
