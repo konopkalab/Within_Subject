@@ -9,7 +9,7 @@ suppressPackageStartupMessages(library(reshape2))
 suppressPackageStartupMessages(library(sqldf))
 suppressPackageStartupMessages(library(variancePartition))
 suppressPackageStartupMessages(library(dplyr))
-source("BertoEtal_SME_Functions.R")
+source("Utils.R")
 
 folder_names <- c("OUTPUTS", "PLOTS")
 sapply(folder_names, dir.create)
