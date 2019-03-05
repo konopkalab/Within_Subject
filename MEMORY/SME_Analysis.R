@@ -97,7 +97,9 @@ SME_cor_LR <- do.call(rbind,res)
 SME_cor_LR <- SME_cor_LR[c(3,4,1,2)]
 save(SME_cor_LR,file = "OUTPUTS/SME_Genes.RData")
 
-# Bootstrap Resected Data
+###########################
+# Bootstrap Resected data #
+###########################
 # Select 16 subject randomly 100 times
 # Recalculate correlation
 # Compare with the observed one
@@ -123,7 +125,7 @@ highgammaBoot <- list()
 # Correlation analysis for each of the bootstrap. 
 for(i in 1:B) {
     deltaBoot[[i]] <- FastCor(Y.b[[i]],Lateral_resected[1,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
-   	thetaBoot[[i]] <- FastCor(Y.b[[i]],Lateral_resected[2,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
+    thetaBoot[[i]] <- FastCor(Y.b[[i]],Lateral_resected[2,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
     alphaBoot[[i]] <- FastCor(Y.b[[i]],Lateral_resected[3,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
     betaBoot[[i]] <- FastCor(Y.b[[i]],Lateral_resected[4,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
     gammaBoot[[i]] <- FastCor(Y.b[[i]],Lateral_resected[5,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
@@ -159,7 +161,9 @@ SME_cor_LR$BootP[i] <- sum(abs(resultBoot[i,]) >= abs(SME_cor_LR$Rho[i]))/B
 # Resave the file
 save(SME_cor_LR,file = "OUTPUTS/SME_Genes.RData")
 
-# Permutation Within Data
+#############################
+# Permutation Resected data #
+#############################
 # Permute the expression data 100 times
 # Recalculate correlation
 # Compare with the observed one
@@ -214,7 +218,9 @@ SME_cor_LR$PermP[i] <- sum(abs(resultPerm[i,]) >= abs(SME_cor_LR$Rho[i]))/P
 # Resave the file
 save(SME_cor_LR,file = "OUTPUTS/SME_Genes.RData")
 
-# Bootstrap Resected + Frozen Data
+####################################
+# Bootstrap Resected + Frozen Data #
+####################################
 # Select 16 subject randomly 100 times
 # Recalculate correlation
 # Compare with the observed one
