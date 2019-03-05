@@ -104,9 +104,9 @@ Sessions <- list()
 
 # Correlation analysis for each of the bootstrap. 
 for(i in 1:B) {
-    PercRec[[i]] <- FastCor(Y.b[[i]],mriT[1,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
-    EncWord[[i]] <- FastCor(Y.b[[i]],mriT[2,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
-    Sessions[[i]] <- FastCor(Y.b[[i]],mriT[3,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
+    PercRec[[i]] <- FastCor(Y.b[[i]],behavT[1,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
+    EncWord[[i]] <- FastCor(Y.b[[i]],behavT[2,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
+    Sessions[[i]] <- FastCor(Y.b[[i]],behavT[3,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
 }
 
 # Define and combine the bootstrapped data
@@ -146,9 +146,9 @@ Sessions <- list()
 
 # Correlation analysis for each of the permutation 
 for(i in 1:P) {
-    PercRec[[i]] <- FastCor(Y.b[[i]],mriT[1,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
-    EncWord[[i]] <- FastCor(Y.b[[i]],mriT[2,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
-    Sessions[[i]] <- FastCor(Y.b[[i]],mriT[3,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
+    PercRec[[i]] <- FastCor(Y.b[[i]],behavT[1,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
+    EncWord[[i]] <- FastCor(Y.b[[i]],behavT[2,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
+    Sessions[[i]] <- FastCor(Y.b[[i]],behavT[3,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
 }
 
 # Define and combine the bootstrapped data
@@ -218,9 +218,9 @@ Sessions <- list()
 
 # Correlation analysis for each of the bootstrap. 
 for(i in 1:B) {
-    PercRec[[i]] <- FastCor(Y.b[[i]],mriT[1,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
-    EncWord[[i]] <- FastCor(Y.b[[i]],mriT[2,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
-    Sessions[[i]] <- FastCor(Y.b[[i]],mriT[3,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
+    PercRec[[i]] <- FastCor(Y.b[[i]],behavT[1,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
+    EncWord[[i]] <- FastCor(Y.b[[i]],behavT[2,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
+    Sessions[[i]] <- FastCor(Y.b[[i]],behavT[3,],method="spearman",alternative="two.sided",cores=12,override=TRUE) %>% as.data.frame()
 }
 
 # Define and combine the bootstrapped data
