@@ -1,8 +1,8 @@
 ##########################################################
-## Functions correlation and brain waves         		##
-## FastCor = multicore rapid correlation		    	##
-## VarExp = variance explained by PCAs 					##
-## plotVarExp = Plot variance explained  				##
+## Functions correlation and brain waves         	##
+## FastCor = multicore rapid correlation		##
+## VarExp = variance explained by PCAs 			##
+## plotVarExp = Plot variance explained  		##
 ##########################################################
 
 
