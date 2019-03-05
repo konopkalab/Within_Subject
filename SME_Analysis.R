@@ -11,6 +11,7 @@ suppressPackageStartupMessages(library(variancePartition))
 suppressPackageStartupMessages(library(dplyr))
 source("Utils.R")
 
+# Create Output directories
 folder_names <- c("OUTPUTS", "PLOTS")
 sapply(folder_names, dir.create)
 
@@ -70,7 +71,6 @@ pheno.tmp <- pheno[match(colnames(Lateral_resected),pheno$UT.code),]
 within_data <- adj.residuals[,colnames(adj.residuals) %in% rownames(pheno.tmp)]
 within_data <- within_data[,match(rownames(pheno.tmp),colnames(within_data))]
 write.table(within_data, "OUTPUTS/logCPM_LEGA_QuantNorm_LMreg_WithinData.txt",sep="\t",quote=F)
-save(within_data, Lateral_resected,pheno.tmp,file="OUTPUTS/INPUT_DATA_SME.RData")
 
 # Dummy data for bootstrap
 boot_data <- adj.residuals
@@ -92,7 +92,7 @@ for(i in 1:length(res)){
 
 SME_cor_LR <- do.call(rbind,res)
 SME_cor_LR <- SME_cor_LR[c(3,4,1,2)]
-save(SME_cor_LR,file = "OUTPUTS/SME_cor_LR_within.RData")
+save(SME_cor_LR,file = "OUTPUTS/SME_Genes.RData")
 
 # Bootstrap Resected Data
 # Select 16 subject randomly 100 times
@@ -154,7 +154,7 @@ SME_cor_LR$BootP[i] <- sum(abs(resultBoot[i,]) >= abs(SME_cor_LR$Rho[i]))/B
 }
 
 # Resave the file
-save(SME_cor_LR,file = "OUTPUTS/SME_cor_LR_within.RData")
+save(SME_cor_LR,file = "OUTPUTS/SME_Genes.RData")
 
 # Permutation Within Data
 # Permute the expression data 100 times
@@ -209,7 +209,7 @@ SME_cor_LR$PermP[i] <- sum(abs(resultPerm[i,]) >= abs(SME_cor_LR$Rho[i]))/P
 }
 
 # Resave the file
-save(SME_cor_LR,file = "OUTPUTS/SME_cor_LR_within.RData")
+save(SME_cor_LR,file = "OUTPUTS/SME_Genes.RData")
 
 # Bootstrap Resected + Frozen Data
 # Select 16 subject randomly 100 times
@@ -296,10 +296,10 @@ SME_cor_LR$BootP_All[i] <- sum(abs(resultBootAll[i,]) >= abs(SME_cor_LR$Rho[i]))
 }
 
 # Resave the file
-save(SME_cor_LR,file = "OUTPUTS/SME_cor_LR_within.RData")
+save(SME_cor_LR,file = "OUTPUTS/SME_Genes.RData")
 
 # Filter and save the significant genes. 
-SME_cor_LR_sign <- SME_cor_LR[SME_cor_LR$Pval < 0.05 & SME_cor_LR$BootP < 0.05 & SME_cor_LR$PermP < 0.05 & SME_cor_LR$BootP_All < 0.05,]
-write.table(SME_cor_LR_sign,"OUTPUTS/SME_cor_LR_BothCor_P005.txt",sep="\t",quote=F)
+SME_Significant_Genes <- SME_cor_LR[SME_cor_LR$Pval < 0.05 & SME_cor_LR$BootP < 0.05 & SME_cor_LR$PermP < 0.05 & SME_cor_LR$BootP_All < 0.05,]
+write.table(SME_Significant_Genes,"OUTPUTS/SME_Significant_Genes.txt",sep="\t",quote=F)
 
 
