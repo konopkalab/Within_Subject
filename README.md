@@ -22,7 +22,7 @@ Pre-print URL:
 | [`enrichments_SME`](enrichments_SME/) | Enrichment analysis for SME genes. | 07_Cross-Enrich_SME.R |
 | [`processing_wgcna`](processing_wgcna/) | Output data from the consensus WGCNA analysis. | 08_consWGCNA.R |
 | [`enrichments_wgcna`](enrichments_wgcna/) | Enrichment analysis for co-expression modules. | 09_Enrichments_consWGCNA.R |
-| [`magma_wgcna`](magma_wgcna/) | Genetic enrichment for the co-expression modules using MAGMA. | 10_consWGCNA_Magma.sh |
+| [`magma_wgcna`](magma_wgcna/) | GWAS enrichment for the co-expression modules. | 10_consWGCNA_Magma.sh |
 | [`processing_scRNAseq`](processing_scRNAseq/) | Output data from single-nuclei RNA-seq analysis. | 11_SingleCell_Analysis.R |
 | [`supp_tables`](supp_tables/) | Databases and supplementary tables. | 12_Database.R |
 | [`networking`](networking/) | Output data from PPI netowrk analysis. | 13_PPI_Networks.R |
