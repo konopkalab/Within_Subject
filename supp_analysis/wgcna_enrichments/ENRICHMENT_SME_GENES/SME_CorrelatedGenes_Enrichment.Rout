@@ -1,0 +1,231 @@
+
+R version 3.5.0 (2018-04-23) -- "Joy in Playing"
+Copyright (C) 2018 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(WGCNA);
+Loading required package: dynamicTreeCut
+Loading required package: fastcluster
+
+Attaching package: ‘fastcluster’
+
+The following object is masked from ‘package:stats’:
+
+    hclust
+
+
+==========================================================================
+*
+*  Package WGCNA 1.63 loaded.
+*
+*    Important note: It appears that your system supports multi-threading,
+*    but it is not enabled within WGCNA in R. 
+*    To allow multi-threading within WGCNA with all available cores, use 
+*
+*          allowWGCNAThreads()
+*
+*    within R. Use disableWGCNAThreads() to disable threading if necessary.
+*    Alternatively, set the following environment variable on your system:
+*
+*          ALLOW_WGCNA_THREADS=<number_of_processors>
+*
+*    for example 
+*
+*          ALLOW_WGCNA_THREADS=8
+*
+*    To set the environment variable in linux bash shell, type 
+*
+*           export ALLOW_WGCNA_THREADS=8
+*
+*     before running R. Other operating systems or shells will
+*     have a similar command to achieve the same aim.
+*
+==========================================================================
+
+
+
+Attaching package: ‘WGCNA’
+
+The following object is masked from ‘package:stats’:
+
+    cor
+
+> library(cluster);
+> library(ggplot2)
+> library(reshape2)
+> library(RColorBrewer)
+> library(ggpubr)
+Loading required package: magrittr
+> enableWGCNAThreads()
+Allowing parallel execution with up to 7 working processes.
+> 
+> # Brain Exp
+> rm(list=ls())
+> wgcna = list.files(pattern = 'ModuleOutput')
+> tab=read.table(wgcna,sep="\t",header=T)
+> tab <- tab[c(1,4)]
+> colnames(tab)=c("Gene","DEFINITION")
+> tab$DEFINITION <- factor(tab$DEFINITION,levels=paste("WM",1:length(unique(tab$DEFINITION)),sep=""))
+> 
+> Genes=as.data.frame(table(tab$DEFINITION))
+> 
+> 
+> # Loop to make the overlap
+> # The loop goes along the length of the GeneSets lists
+> 
+> files1=list.files(pattern="SME_cor_LR")
+> tmp=as.data.frame(lapply(files1,read.table,sep="\t")[[1]])
+> tmp <- tmp[c(1,2)]
+> GeneSets <- split(tmp,tmp$Waves)
+> ln=length(GeneSets)
+> cl=length(Genes$Var1)
+> TEMP=list()
+> INT=list()
+> for (i in 1:ln)
++ {
++ TEMP[[i]]=tab[tab$Gene %in% GeneSets[[i]]$Gene,]
++ INT[[i]]=as.data.frame(table(TEMP[[i]]$DEFINITION))
++ }
+> names(INT)=names(GeneSets)
+> names(TEMP)=names(GeneSets)
+> 
+> # Create the matrix for each GeneSet
+> NROWS <- sapply(GeneSets,nrow)
+> 
+> #
+> #               GeneSet
+> #              +       -
+> #          +-------+-------+
+> #        + |   a   |   b   |
+> #  Module  +-------+-------+
+> #        - |   c   |   d   |
+> #          +-------+-------+
+> 
+> for (i in 1:length(INT))
++ {
++ INT[[i]]$b <- NROWS[[i]]-INT[[i]]$Freq
++ INT[[i]]$c <- Genes$Freq-INT[[i]]$Freq 
++ INT[[i]]$d <- 15585-Genes$Freq-nrow(GeneSets[[i]]) #Protein Coding bkg = 19901 Ortho bkg = 14373 Brain Expressed bkg = 15585
++ }
+> 
+> # sum(Genes$Freq)
+> RunFisher <- function(row, alt = 'greater', cnf = 0.85) {
++   f <- fisher.test(matrix(row, nrow = 2), alternative = alt, conf.level = cnf)
++   return(c(row,
++            P_val = f$p.value,
++            LogP = -log10(f$p.value), 
++            OR = f$estimate[[1]],
++            OR_Low = f$conf.int[1],
++            OR_Up = f$conf.int[2]))
++ }
+> 
+> # run
+> FisherMat=list()
+> for (i in 1:length(INT))
++ {
++ FisherMat[[i]] <- t(apply(INT[[i]][,2:5], 1, RunFisher))
++ rownames(FisherMat[[i]]) <- INT[[i]]$Var1
++ FisherMat[[i]] <- FisherMat[[i]][rownames(FisherMat[[i]]) != "grey",]
++ }
+> names(FisherMat)<-names(INT)
+> save(FisherMat,file="SME_CorrelatedGenes_EnrichMat.RData")
+> 
+> # Create matrices of Pval
+> tmp<-list()
+> FisherP<-matrix()
+> rowNames <- rownames(FisherMat[[1]])
+> colNames <- names(FisherMat)
+> for (i in 1:length(INT))
++ {
++ tmp[[i]] <- cbind(as.numeric(FisherMat[[i]][,5]))
++ FisherP <- do.call(cbind,tmp)
++ }
+> rownames(FisherP) <- rowNames
+> colnames(FisherP) <- colNames
+> 
+> # Create matrices of OR
+> tmp<-list()
+> FisherOR<-matrix()
+> rowNames <- rownames(FisherMat[[1]])
+> colNames <- names(FisherMat)
+> for (i in 1:length(INT))
++ {
++ tmp[[i]] <- cbind(as.numeric(FisherMat[[i]][,7]))
++ FisherOR <- do.call(cbind,tmp)
++ }
+> rownames(FisherOR) <- rowNames
+> colnames(FisherOR) <- colNames
+> 
+> # Pval Adjusted
+> library(magrittr)
+> FisherAdj <- FisherP %>% as.matrix %>% as.vector %>% p.adjust(method='BH') %>% matrix(ncol=ncol(FisherP))
+> rownames(FisherAdj) <- rowNames
+> colnames(FisherAdj) <- colNames
+> 
+> FisherAdj[FisherAdj>0.05]=1
+> FisherOR[FisherOR < 1]=0
+> vec <- c("Delta","Theta","Alpha","Beta","Gamma","High.Gamma")
+> FisherAdj <- FisherAdj[,match(vec,colnames(FisherAdj))]
+> FisherOR <- FisherOR[,match(vec,colnames(FisherOR))]
+> 
+> p <- as.data.frame(FisherAdj)
+> cor <- as.data.frame(FisherOR)
+> 
+> 
+> p $Module <- rownames(p )
+> cor$Module <- rownames(cor)
+> 
+> p <- melt(p)
+Using Module as id variables
+> cor <- melt(cor)
+Using Module as id variables
+> p$cor <- cor$value
+> p$log <- -log10(p$value)
+> p$Module <- factor(p$Module,levels=paste("WM",1:26,sep=""))
+> 
+> p$log[p$log < 1.3] <- NA
+> p$abs <- abs(p$cor)
+> p$OR<- ifelse(is.na(p$log), p$log, p$abs)
+> 
+> #p$variable <- factor(p$variable,levels=c("ENDOTHELIAL","ASTROCYTES","OPC","OLIGODENDROCYTES","MICROGLIA","EXCITATORY", "INHIBITORY"))
+> 
+> pdf("Modules_SME_CorrelatedGenes_Bubble.pdf",width=8,height=2)
+> ggscatter(p, 
++   			x = "variable",
++   			y = "Module",
++    			size="OR",
++    			color="log",
++    			alpha = 0.8,
++    			xlab = "",
++             ylab = "",) +
++    			theme_minimal() +
++    			rotate_x_text(angle = 45)+
++         coord_flip()+
++   		scale_size(range = c(2, 10))+ 
++   		gradient_color(c("red","darkred"))
+Warning message:
+Removed 141 rows containing missing values (geom_point). 
+> dev.off()
+null device 
+          1 
+> 
+> 
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  3.741   0.213   3.945 

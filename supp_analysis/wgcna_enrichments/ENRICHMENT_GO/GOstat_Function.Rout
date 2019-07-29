@@ -1,0 +1,166 @@
+
+R version 3.5.0 (2018-04-23) -- "Joy in Playing"
+Copyright (C) 2018 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+> dogo <- function(names,universe,species="human", goP = 0.01, 
++ 	cond=FALSE, ontology = "BP"){
++     if(species=="human"){
++ 		golib="org.Hs.eg.db"
++ 		library(golib,character.only=TRUE)
++ 		gomap= org.Hs.egSYMBOL2EG
++   } else  if (species == "mouse") {
++ 		golib="org.Mm.eg.db"
++ 		library(golib,character.only=TRUE)
++ 		gomap= org.Mm.egSYMBOL2EG
++ 	}
++   require(GOstats)
++   x=unlist(mget(as.character(names), gomap,ifnotfound = NA))
++   x=x[!is.na(x)]
++   Universe=unlist(mget(as.character(universe),gomap,ifnotfound = NA))
++  Universe=unique(c(Universe[!is.na(Universe)],unique(x)))
++ 
++   params <- new("GOHyperGParams", geneIds = unique(x),
++                 universeGeneIds = Universe,
++                 annotation = golib,
++                 ontology = ontology, pvalueCutoff = goP, conditional = cond,
++                 testDirection="over")
++   ht=hyperGTest(params)
++   tab=summary(ht)
++   tmp1=geneIdsByCategory(ht)
++   tmp1=tmp1[tab[,1]]
++   tab$IDs=sapply(tmp1,function(y) paste(names(x)[x%in%y],collapse=";"))
++   return(tab)
++ 
++ }
+> 
+> # How to run
+> library(multtest)
+Loading required package: BiocGenerics
+Loading required package: parallel
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:parallel’:
+
+    clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+    clusterExport, clusterMap, parApply, parCapply, parLapply,
+    parLapplyLB, parRapply, parSapply, parSapplyLB
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colMeans,
+    colnames, colSums, dirname, do.call, duplicated, eval, evalq,
+    Filter, Find, get, grep, grepl, intersect, is.unsorted, lapply,
+    lengths, Map, mapply, match, mget, order, paste, pmax, pmax.int,
+    pmin, pmin.int, Position, rank, rbind, Reduce, rowMeans, rownames,
+    rowSums, sapply, setdiff, sort, table, tapply, union, unique,
+    unsplit, which, which.max, which.min
+
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+> files=list.files(pattern="ModuleOutput")
+> mod=as.data.frame(lapply(files,read.table,sep="\t",header=T)[[1]])
+> mod <- mod[c(1,4)]
+> colnames(mod)[2] <- "Class"
+> uni <- read.table("universe.txt",header=F)
+> uni <- as.character(uni$V1)
+> 
+> list=list()
+> df=list()
+> for (net in levels(mod$Class)) {
++ list[[net]]=mod[mod$Class == net,]
++ df[[net]]=dogo(list[[net]]$Gene,uni,species="human", goP = 1,cond=FALSE, ontology = "BP")
++ df[[net]]$adj=p.adjust(df[[net]]$Pvalue,"BH")
++ df[[net]]=df[[net]][df[[net]]$adj < 0.2,]
++ }
+Loading required package: AnnotationDbi
+Loading required package: stats4
+Loading required package: IRanges
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:base’:
+
+    expand.grid
+
+
+Loading required package: GOstats
+Loading required package: Category
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+Loading required package: graph
+
+
+Attaching package: ‘GOstats’
+
+The following object is masked from ‘package:AnnotationDbi’:
+
+    makeGOGraph
+
+Warning message:
+package ‘IRanges’ was built under R version 3.5.1 
+> dir.create("BP/")
+> net=levels(mod$Class)
+> for (i in 1:length(df)) write.table(df[[i]], file = paste("BP/BP_", net[[i]], ".txt",sep = ""),sep="\t",quote=F)
+> 
+> 
+> list=list()
+> df=list()
+> for (net in levels(mod$Class)) {
++ list[[net]]=mod[mod$Class == net,]
++ df[[net]]=dogo(list[[net]]$Gene,uni,species="human", goP = 1,cond=FALSE, ontology = "MF")
++ df[[net]]$adj=p.adjust(df[[net]]$Pvalue,"BH")
++ df[[net]]=df[[net]][df[[net]]$adj < 0.2,]
++ }
+> dir.create("MF/")
+> net=levels(mod$Class)
+> for (i in 1:length(df)) write.table(df[[i]], file = paste("MF/MF_", net[[i]], ".txt",sep = ""),sep="\t",quote=F)
+> 
+> 
+> list=list()
+> df=list()
+> for (net in levels(mod$Class)) {
++ list[[net]]=mod[mod$Class == net,]
++ df[[net]]=dogo(list[[net]]$Gene,uni,species="human", goP = 1,cond=FALSE, ontology = "CC")
++ df[[net]]$adj=p.adjust(df[[net]]$Pvalue,"BH")
++ df[[net]]=df[[net]][df[[net]]$adj < 0.2,]
++ }
+> dir.create("CC/")
+> net=levels(mod$Class)
+> for (i in 1:length(df)) write.table(df[[i]], file = paste("CC/CC_", net[[i]], ".txt",sep = ""),sep="\t",quote=F)
+> 
+> proc.time()
+    user   system  elapsed 
+1518.719  267.484 1789.219 

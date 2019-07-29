@@ -1,0 +1,1 @@
+GOBPID	Pvalue	OddsRatio	ExpCount	Count	Size	Term	IDs	adj
