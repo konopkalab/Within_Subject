@@ -13,7 +13,7 @@ Pre-print URL:
 
 | directory | contents | code |
 | --------- | -------- | -------- |
-| [`processing_qc`](processing_qc/) | Output data from initial processing and quality check. | [`01_Data_processing_QC.R`] |
+| [`processing_qc`](processing_qc/) | Output data from initial processing and quality check. | [`01_Data_processing_QC.R`] (01_Data_processing_QC.R)  |
 | [`processing_memory`](processing_memory/) | Output data from memory (SME) analysis (02_SME_Analysis.R). |
 | [`processing_math`](processing_math/) | Output data from math task analysis (03_MATH_Analysis.R). |
 | [`processing_mri`](processing_mri/) | Output data from MRI (thickness) analysis (04_MRI_Analysis.R). |
