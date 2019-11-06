@@ -18,3 +18,6 @@ R CMD BATCH --vanilla ToRun.R
 *	Search for a gene and wave
 
 *	Have fun!
+
+Here one example for the output of this `Shiny App`.
+[![](ScreenShot.png)]
