@@ -63,71 +63,6 @@ save(SME_cor_LR,file = "processing_memory/SME_Genes.RData")
 
 B=100  ## select number of bootstrap resamples
 index.b <- list()
-### Stefano Berto, 10/2018 - 
-### Code for SME - gene expression correlation analysis
-### Perform expression filtering, regression, correlation and cross-validations]
-
-# Load libraries
-suppressPackageStartupMessages(library(sva))
-suppressPackageStartupMessages(library(scales))
-suppressPackageStartupMessages(library(RColorBrewer))
-suppressPackageStartupMessages(library(knitr))
-suppressPackageStartupMessages(library(preprocessCore))
-suppressPackageStartupMessages(library(reshape2))
-suppressPackageStartupMessages(library(sqldf))
-suppressPackageStartupMessages(library(variancePartition))
-suppressPackageStartupMessages(library(dplyr))
-suppressPackageStartupMessages(library(ggplot2))
-suppressPackageStartupMessages(library(reshape2))
-suppressPackageStartupMessages(library(pheatmap))
-suppressPackageStartupMessages(library(ggpubr))
-suppressPackageStartupMessages(library(cowplot))
-suppressPackageStartupMessages(library(ggrepel))
-suppressPackageStartupMessages(library(xlsx))
-suppressPackageStartupMessages(library(made4))
-suppressPackageStartupMessages(library(corrplot))
-suppressPackageStartupMessages(library(tibble))
-suppressPackageStartupMessages(library(magrittr))
-suppressPackageStartupMessages(library(tidyr))
-suppressPackageStartupMessages(library(purrr))
-suppressPackageStartupMessages(library(openxlsx))
-suppressPackageStartupMessages(library(psych))
-suppressPackageStartupMessages(library(here))
-suppressPackageStartupMessages(library(matrixStats))
-source("Utils.R")
-
-# Create Output directories
-dir.create("processing_memory")
-
-# Load inputs
-load(here("rawdata","expAdj.RData"))
-load(here("rawdata","SME_Values.RData"))
-
-# Correlation ANALYSIS
-res <- list()
-for(i in 1:nrow(Lateral_resected))
-{
-res[[i]] <- FastCor(within_data,Lateral_resected[i,],method="spearman",alternative="two.sided",cores=12,override=TRUE)%>%
-                      as.data.frame() %>%
-                      rownames_to_column('Gene') 
-}
-
-SME_cor_LR <- data.frame()
-for(i in 1:length(res)){
-	res[[i]]$Waves <- rep(paste(rownames(Lateral_resected)[i]),nrow(res[[i]]))
-}
-
-SME_cor_LR <- do.call(rbind,res)
-SME_cor_LR <- SME_cor_LR[c(1,4,2,3)]
-save(SME_cor_LR,file = "processing_memory/SME_Genes.RData")
-
-# Bootstrap Resected Data
-# Select 16 subject randomly 100 times
-# Recalculate correlation
-# Compare with the observed one
-
-B=100  ## select number of bootstrap resamples
-index.b <- list()
 Y.b <- list()
 for (i in 1:B){
 	set.seed(i*B+1)
@@ -550,4 +485,3 @@ cowplot::save_plot("processing_memory/PermAnalysis/Permutation_Percentage.pdf", 
 
 # sessionInfo
 sessionInfo()
-
