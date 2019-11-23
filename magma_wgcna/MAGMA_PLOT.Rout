@@ -1,0 +1,80 @@
+
+R version 3.6.1 (2019-07-05) -- "Action of the Toes"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(ggplot2)
+> library(ggrepel)
+> library(ggpubr)
+Loading required package: magrittr
+> library(reshape2)
+> library(WGCNA)
+Loading required package: dynamicTreeCut
+Loading required package: fastcluster
+
+Attaching package: ‘fastcluster’
+
+The following object is masked from ‘package:stats’:
+
+    hclust
+
+
+
+Attaching package: ‘WGCNA’
+
+The following object is masked from ‘package:stats’:
+
+    cor
+
+> 
+> files=list.files(pattern="STATISTICS")
+> tmp=as.data.frame(lapply(files,read.table,sep="\t",header=T)[[1]])
+> 
+> tmp <- tmp[c(1,7,8)]
+> df <- melt(tmp)
+Using VARIABLE, Sample as id variables
+> df$log <- -log10(df$value)
+> df$VARIABLE <- factor(df$VARIABLE,levels=paste("WM",1:26,sep=""))
+> df$Sample <- factor(df$Sample,levels=rev(levels(df$Sample)))
+> 
+> df$log[df$log < 1.3] <- NA
+> 
+> 
+> pdf("MAGMA_BUBBLE.pdf",width=8,height=3.5)
+> ggscatter(df, 
++   			x = "Sample",
++   			y = "VARIABLE",
++    			size="log",
++    			color="log",
++    			alpha = 0.8,
++    			xlab = "",
++             ylab = "",) +
++    			theme_minimal() + 
++    			gradient_color(c("red", "darkred"))+
++    			rotate_x_text(angle = 45)+
++         coord_flip()
+Warning message:
+Removed 341 rows containing missing values (geom_point). 
+> dev.off()
+null device 
+          1 
+> 
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  3.531   0.319   4.189 
