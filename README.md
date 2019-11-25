@@ -7,7 +7,7 @@ This repository contains analysis code for the Within Subject project carried ou
 
 If you use anything in this repository please cite the following publication:
 
-Pre-print URL: 
+Pre-print URL: https://www.biorxiv.org/content/early/2019/11/25/853531.full.pdf
 
 ## Files
 
