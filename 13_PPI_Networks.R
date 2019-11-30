@@ -1,4 +1,3 @@
-# Covariate plot
 rm(list=ls())
 suppressPackageStartupMessages(library(ggplot2))
 suppressPackageStartupMessages(library(pls))
@@ -42,6 +41,3 @@ for(i in 1:length(names))
 		string_db$plot_network(hits[[i]])
 		dev.off()
 	}
-
-
-
