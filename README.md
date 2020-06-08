@@ -28,5 +28,6 @@ Pre-print URL: https://www.biorxiv.org/content/early/2019/11/25/853531.full.pdf
 | [`networking`](networking/) | Output data from PPI netowrk analysis. | 13_PPI_Networks.R |
 | [`supp_analysis`](supp_analysis/) | Supplementary data and analysis. |
 | [`Shiny_App`](Shiny_App/) | Shiny app for SME - Gene Scatterplot. |
+| [`Revision_Analysis](Revision_Analysis/) | Directory with codes used for the revision. |
 
 ![](ScreenShot.png)]
