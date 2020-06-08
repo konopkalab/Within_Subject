@@ -1,0 +1,4 @@
+Sample	Age	EpDur
+FA09X	51	41
+FA25X	26	10
+FA26X	33	4
